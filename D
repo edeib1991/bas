@@ -1,0 +1,67 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
+
+contract ArraysExercise {
+    uint[] public numbers = [1,2,3,4,5,6,7,8,9,10];
+    address[] public senders;
+    uint[] public timestamps;
+
+    // Возвращает весь массив `numbers`
+    function getNumbers() public view returns (uint[] memory) {
+        return numbers;
+    }
+
+    // Сбрасывает массив `numbers` к начальному значению (1-10)
+    function resetNumbers() public {
+        delete numbers;
+        numbers = [1,2,3,4,5,6,7,8,9,10];
+    }
+
+    // Добавляет элементы из `_toAppend` к массиву `numbers`
+    function appendToNumbers(uint[] calldata _toAppend) public {
+        for (uint i = 0; i < _toAppend.length; i++) {
+            numbers.push(_toAppend[i]);
+        }
+    }
+
+    // Сохраняет адрес вызывающего и временную метку `_unixTimestamp`
+    function saveTimestamp(uint _unixTimestamp) public {
+        senders.push(msg.sender);
+        timestamps.push(_unixTimestamp);
+    }
+
+    // Возвращает все временные метки и соответствующие адреса отправителей,
+    // которые позже 1 января 2000 года
+    function afterY2K() public view returns (uint[] memory, address[] memory) {
+        uint count;
+        for (uint i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] > 946702800) {
+                count++;
+            }
+        }
+
+        uint[] memory recentTimestamps = new uint[](count);
+        address[] memory recentSenders = new address[](count);
+        uint index;
+
+        for (uint i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] > 946702800) {
+                recentTimestamps[index] = timestamps[i];
+                recentSenders[index] = senders[i];
+                index++;
+            }
+        }
+
+        return (recentTimestamps, recentSenders);
+    }
+
+    // Сбрасывает массив `senders`
+    function resetSenders() public {
+        delete senders;
+    }
+
+    // Сбрасывает массив `timestamps`
+    function resetTimestamps() public {
+        delete timestamps;
+    }
+}
