@@ -1,0 +1,91 @@
+в Contract выбираем Salesperso
+Id Number: 55555
+Manager id: 12345
+Salary: 20
+
+Contract и тыкаем на EngineeringManager
+Id Number: 54321
+Manager id: 11111
+Annual salary: 200000
+
+Contract выбираем InheritanceSubmission
+ Salesperon контракт адрес; 2. EngineeringManager контракт адрес
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
+
+// Абстрактный контракт Employee
+abstract contract Employee {
+    uint public idNumber;
+    uint public managerId;
+
+    constructor(uint _idNumber, uint _managerId) {
+        idNumber = _idNumber;
+        managerId = _managerId;
+    }
+
+    function getAnnualCost() public view virtual returns (uint);
+}
+
+// Контракт Salaried
+contract Salaried is Employee {
+    uint public annualSalary;
+
+    constructor(uint _idNumber, uint _managerId, uint _annualSalary) Employee(_idNumber, _managerId) {
+        annualSalary = _annualSalary;
+    }
+
+    function getAnnualCost() public view override returns (uint) {
+        return annualSalary;
+    }
+}
+
+// Контракт Hourly
+contract Hourly is Employee {
+    uint public hourlyRate;
+
+    constructor(uint _idNumber, uint _managerId, uint _hourlyRate) Employee(_idNumber, _managerId) {
+        hourlyRate = _hourlyRate;
+    }
+
+    function getAnnualCost() public view override returns (uint) {
+        return hourlyRate * 2080;
+    }
+}
+
+// Контракт Manager
+contract Manager {
+    uint[] public employeeIds;
+
+    function addReport(uint employeeId) public {
+        employeeIds.push(employeeId);
+    }
+
+    function resetReports() public {
+        delete employeeIds;
+    }
+}
+
+// Контракт Salesperson
+contract Salesperson is Hourly {
+    constructor(uint _idNumber, uint _managerId, uint _hourlyRate)
+        Hourly(_idNumber, _managerId, _hourlyRate) {}
+}
+
+// Контракт EngineeringManager
+contract EngineeringManager is Salaried, Manager {
+    constructor(uint _idNumber, uint _managerId, uint _annualSalary)
+        Salaried(_idNumber, _managerId, _annualSalary) {}
+}
+
+// Контракт для подачи адресов развернутых контрактов
+contract InheritanceSubmission {
+    address public salesPerson;
+    address public engineeringManager;
+
+    constructor(address _salesPerson, address _engineeringManager) {
+        salesPerson = _salesPerson;
+        engineeringManager = _engineeringManager;
+    }
+}
