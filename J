@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
+
+contract ErrorTriageExercise {
+    /**
+     * Вычисляет разницу между каждым целым числом и его соседом (a и b, b и c и т.д.)
+     * и возвращает массив целых чисел с абсолютной разницей каждого соседнего значения.
+     */
+    function diffWithNeighbor(
+        uint _a,
+        uint _b,
+        uint _c,
+        uint _d
+    ) public pure returns (uint[] memory) {
+        // Initialize an array to store the differences
+        uint[] memory results = new uint[](3);
+
+        // Calculate the absolute difference between each pair of integers and store it in the results array
+        results[0] = _a > _b ? _a - _b : _b - _a;
+        results[1] = _b > _c ? _b - _c : _c - _b;
+        results[2] = _c > _d ? _c - _d : _d - _c;
+
+        // Return the array of differences
+        return results;
+    }
+
+    /**
+     * Изменяет значение _base на _modifier. Значение _base всегда >= 1000. 
+     * Модификатор может быть положительным или отрицательным, в пределах -100 до +100.
+     */
+    function applyModifier(
+        uint _base,
+        int _modifier
+    ) public pure returns (uint) {
+        require(_base >= 1000, "Base must be >= 1000");
+        require(_modifier >= -100 && _modifier <= 100, "Modifier must be between -100 and 100");
+
+        int result = int(_base) + _modifier;
+        require(result >= 0, "Resulting value must be non-negative");
+
+        return uint(result);
+    }
+
+    /**
+     * Удаляет последний элемент из массива и возвращает его значение.
+     */
+    uint[] arr;
+
+    function popWithReturn() public returns (uint) {
+        require(arr.length > 0, "Array is empty");
+
+        uint value = arr[arr.length - 1];
+        arr.pop();
+        return value;
+    }
+
+    // Вспомогательные функции работают корректно
+    function addToArr(uint _num) public {
+        arr.push(_num);
+    }
+
+    function getArr() public view returns (uint[] memory) {
+        return arr;
+    }
+
+    function resetArr() public {
+        delete arr;
+    }
+}
